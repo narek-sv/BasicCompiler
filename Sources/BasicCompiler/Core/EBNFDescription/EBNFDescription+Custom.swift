@@ -7,17 +7,17 @@
 
 import Foundation
 
-final class ProgramFormDescription: EBNFComplexDescription {
-    static let form: [EBNFDescription] = [
-        ProgramHeaderFormDescription(),
-        VariableDefinitionsFormDescription(),
-        ConcreteTokenFormDescription(.otherLexem(.begin)),
-        StatementSequenceFormDescription(),
-        ConcreteTokenFormDescription(.otherLexem(.end)),
-        ConcreteTokenFormDescription(.operator(.dot))
+final class EBNFProgramDescription: EBNFComplexDescription {
+    static let description: [EBNFDescription] = [
+        EBNFProgramHeaderDescription(),
+        EBNFVariableDefinitionsDescription(),
+        EBNFConcreteTokenDescription(.otherLexem(.begin)),
+        EBNFStatementSequenceDescription(),
+        EBNFConcreteTokenDescription(.otherLexem(.end)),
+        EBNFConcreteTokenDescription(.operator(.dot))
     ]
     
-    func evaluate(form: EBNFDescription, index: Int, usedTokens: [TokenInfo]) throws {
+    func generate(description: EBNFDescription, index: Int, usedTokens: [TokenDescription]) throws {
         if index == 0 {
             Generator.shared.startDataSegment()
         } else if index == 2 {
@@ -28,47 +28,47 @@ final class ProgramFormDescription: EBNFComplexDescription {
     }
 }
 
-final class ProgramHeaderFormDescription: EBNFComplexDescription {
-    static let form: [EBNFDescription] = [
-        ConcreteTokenFormDescription(.otherLexem(.program)),
-        IdentifierFormDescription(),
-        ConcreteTokenFormDescription(.operator(.semicolon))
+final class EBNFProgramHeaderDescription: EBNFComplexDescription {
+    static let description: [EBNFDescription] = [
+        EBNFConcreteTokenDescription(.otherLexem(.program)),
+        EBNFIdentifierDescription(),
+        EBNFConcreteTokenDescription(.operator(.semicolon))
     ]
     
-    func evaluate(form: EBNFDescription, index: Int, usedTokens: [TokenInfo]) throws {
+    func generate(description: EBNFDescription, index: Int, usedTokens: [TokenDescription]) throws {
         if index == 1, case let .identifier(id) = usedTokens.first?.token {
             try Generator.shared.setProgramName(id)
         }
     }
 }
 
-final class VariableDefinitionsFormDescription: EBNFComplexDescription {
-    static let form: [EBNFDescription] = [
-        OptionalFormDescription([
-            ConcreteTokenFormDescription(.otherLexem(.var)),
-            VariableSequenceFormDescription(),
-            SequenceFormDescription([
-                VariableSequenceFormDescription()
+final class EBNFVariableDefinitionsDescription: EBNFComplexDescription {
+    static let description: [EBNFDescription] = [
+        EBNFOptionalDescription([
+            EBNFConcreteTokenDescription(.otherLexem(.var)),
+            EBNFVariableSequenceDescription(),
+            EBNFSequenceDescription([
+                EBNFVariableSequenceDescription()
             ])
         ])
     ]
 }
 
-final class VariableSequenceFormDescription: EBNFComplexDescription {
-    static let form: [EBNFDescription] = [
-        IdentifierFormDescription(),
-        SequenceFormDescription([
-            ConcreteTokenFormDescription(.operator(.comma)),
-            IdentifierFormDescription()
+final class EBNFVariableSequenceDescription: EBNFComplexDescription {
+    static let description: [EBNFDescription] = [
+        EBNFIdentifierDescription(),
+        EBNFSequenceDescription([
+            EBNFConcreteTokenDescription(.operator(.comma)),
+            EBNFIdentifierDescription()
         ]),
-        ConcreteTokenFormDescription(.operator(.colon)),
-        TypeFormDescription(),
-        ConcreteTokenFormDescription(.operator(.semicolon))
+        EBNFConcreteTokenDescription(.operator(.colon)),
+        EBNFTypeDescription(),
+        EBNFConcreteTokenDescription(.operator(.semicolon))
     ]
     
     private var variableNames = [String]()
     
-    func evaluate(form: EBNFDescription, index: Int, usedTokens: [TokenInfo]) throws {
+    func generate(description: EBNFDescription, index: Int, usedTokens: [TokenDescription]) throws {
         if index == 0, case let .identifier(id) = usedTokens.first?.token {
             variableNames.append(id)
         } else if index == 1 {
@@ -87,28 +87,28 @@ final class VariableSequenceFormDescription: EBNFComplexDescription {
     }
 }
 
-final class StatementSequenceFormDescription: EBNFComplexDescription {
-    static let form: [EBNFDescription] = [
-        SequenceFormDescription([
-            OrFormDescription([
-                ComplexAssignmentFormDescription(),
-                SimpleAssignmentFormDescription()
+final class EBNFStatementSequenceDescription: EBNFComplexDescription {
+    static let description: [EBNFDescription] = [
+        EBNFSequenceDescription([
+            EBNFOrDescription([
+                EBNFComplexAssignmentDescription(),
+                EBNFSimpleAssignmentDescription()
             ])
         ])
     ]
 }
 
-final class SimpleAssignmentFormDescription: EBNFComplexDescription {
-    static let form: [EBNFDescription] = [
-        IdentifierFormDescription(),
-        ConcreteTokenFormDescription(.operator(.assign)),
-        OperandFormDescription(),
-        ConcreteTokenFormDescription(.operator(.semicolon))
+final class EBNFSimpleAssignmentDescription: EBNFComplexDescription {
+    static let description: [EBNFDescription] = [
+        EBNFIdentifierDescription(),
+        EBNFConcreteTokenDescription(.operator(.assign)),
+        EBNFOperandDescription(),
+        EBNFConcreteTokenDescription(.operator(.semicolon))
     ]
     
     private(set) var variableName = ""
     
-    func evaluate(form: EBNFDescription, index: Int, usedTokens: [TokenInfo]) throws {
+    func generate(description: EBNFDescription, index: Int, usedTokens: [TokenDescription]) throws {
         if index == 0, case let .identifier(id) = usedTokens.first?.token {
             variableName = id
         } else if index == 2 {
@@ -121,14 +121,14 @@ final class SimpleAssignmentFormDescription: EBNFComplexDescription {
     }
 }
 
-final class ComplexAssignmentFormDescription: EBNFComplexDescription {
-    static let form: [EBNFDescription] = [
-        IdentifierFormDescription(),
-        ConcreteTokenFormDescription(.operator(.assign)),
-        OperandFormDescription(),
-        MathOperationFormDescription(),
-        OperandFormDescription(),
-        ConcreteTokenFormDescription(.operator(.semicolon))
+final class EBNFComplexAssignmentDescription: EBNFComplexDescription {
+    static let description: [EBNFDescription] = [
+        EBNFIdentifierDescription(),
+        EBNFConcreteTokenDescription(.operator(.assign)),
+        EBNFOperandDescription(),
+        EBNFMathOperationDescription(),
+        EBNFOperandDescription(),
+        EBNFConcreteTokenDescription(.operator(.semicolon))
     ]
     
     private(set) var variableName = ""
@@ -136,7 +136,7 @@ final class ComplexAssignmentFormDescription: EBNFComplexDescription {
     private(set) var lhsLit: Literal?
     private(set) var operation: Operator = .plus
     
-    func evaluate(form: EBNFDescription, index: Int, usedTokens: [TokenInfo]) throws {
+    func generate(description: EBNFDescription, index: Int, usedTokens: [TokenDescription]) throws {
         if index == 0, case let .identifier(id) = usedTokens.first?.token {
             variableName = id
         } else if index == 2 {
@@ -168,24 +168,24 @@ final class ComplexAssignmentFormDescription: EBNFComplexDescription {
     }
 }
 
-final class OperandFormDescription: EBNFComplexDescription {
-    static let form: [EBNFDescription] = [
-        OrFormDescription([
-            IdentifierFormDescription(),
-            LiteralFormDescription()
+final class EBNFOperandDescription: EBNFComplexDescription {
+    static let description: [EBNFDescription] = [
+        EBNFOrDescription([
+            EBNFIdentifierDescription(),
+            EBNFLiteralDescription()
         ])
     ]
 }
 
-final class TypeFormDescription: EBNFComplexDescription {
-    static let form: [EBNFDescription] = [
-        OrFormDescription([
-            ConcreteTokenFormDescription(.otherLexem(.integer)),
-            ConcreteTokenFormDescription(.otherLexem(.string))
+final class EBNFTypeDescription: EBNFComplexDescription {
+    static let description: [EBNFDescription] = [
+        EBNFOrDescription([
+            EBNFConcreteTokenDescription(.otherLexem(.integer)),
+            EBNFConcreteTokenDescription(.otherLexem(.string))
         ])
     ]
     
-    func evaluate(form: EBNFDescription, index: Int, usedTokens: [TokenInfo]) throws {
+    func generate(description: EBNFDescription, index: Int, usedTokens: [TokenDescription]) throws {
         if let first = usedTokens.first(where: { $0.token != .otherLexem(.integer) }) {
             if case let .otherLexem(id) = first.token {
                 throw Compiler.Errors.notSupportedType(id: id.rawValue)
@@ -194,11 +194,11 @@ final class TypeFormDescription: EBNFComplexDescription {
     }
 }
 
-final class MathOperationFormDescription: EBNFComplexDescription {
-    static let form: [EBNFDescription] = [
-        OrFormDescription([
-            ConcreteTokenFormDescription(.operator(.plus)),
-            ConcreteTokenFormDescription(.operator(.minus))
+final class EBNFMathOperationDescription: EBNFComplexDescription {
+    static let description: [EBNFDescription] = [
+        EBNFOrDescription([
+            EBNFConcreteTokenDescription(.operator(.plus)),
+            EBNFConcreteTokenDescription(.operator(.minus))
         ])
     ]
 }

@@ -8,25 +8,25 @@
 import Foundation
 
 protocol EBNFDescription {
-    func parse(tokens: [TokenInfo]) throws -> EBNFDescriptionParseResult
-    func evaluate(form: EBNFDescription, index: Int, usedTokens: [TokenInfo]) throws
+    func parse(tokens: [TokenDescription]) throws -> EBNFDescriptionParseResult
+    func generate(description: EBNFDescription, index: Int, usedTokens: [TokenDescription]) throws
 }
 
 extension EBNFDescription {
-    func evaluate(form: EBNFDescription, index: Int, usedTokens: [TokenInfo]) throws { }
+    func generate(description: EBNFDescription, index: Int, usedTokens: [TokenDescription]) throws { }
 }
 
 protocol EBNFComplexDescription: EBNFDescription {
-    static var form: [EBNFDescription] { get }
+    static var description: [EBNFDescription] { get }
 }
 
 extension EBNFComplexDescription {
-    func parse(tokens: [TokenInfo]) throws -> EBNFDescriptionParseResult {
-        var usedTokens = [TokenInfo]()
+    func parse(tokens: [TokenDescription]) throws -> EBNFDescriptionParseResult {
+        var usedTokens = [TokenDescription]()
         var unusedTokens = tokens
         
-        for (index, descriptor) in Self.form.enumerated() {
-            let result = try descriptor.parse(tokens: unusedTokens)
+        for (index, description) in Self.description.enumerated() {
+            let result = try description.parse(tokens: unusedTokens)
             
             switch result {
             case .failure:
@@ -35,7 +35,7 @@ extension EBNFComplexDescription {
                 unusedTokens = unused
                 usedTokens += used
                 
-                try evaluate(form: descriptor, index: index, usedTokens: used)
+                try generate(description: description, index: index, usedTokens: used)
             }
         }
         
@@ -44,6 +44,6 @@ extension EBNFComplexDescription {
 }
 
 enum EBNFDescriptionParseResult: Error {
-    case success(used: [TokenInfo], unused: [TokenInfo])
+    case success(used: [TokenDescription], unused: [TokenDescription])
     case failure(error: Compiler.Errors)
 }

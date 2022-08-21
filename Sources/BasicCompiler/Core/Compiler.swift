@@ -8,7 +8,10 @@
 import Foundation
 
 final class Compiler: EBNFComplexDescription {
-    static var form: [EBNFDescription] { [ProgramFormDescription()] }
+    static var description: [EBNFDescription] {
+        [EBNFProgramDescription()]
+    }
+    
     let parser: Parser
     
     init(parser: Parser) {
@@ -31,8 +34,8 @@ final class Compiler: EBNFComplexDescription {
 
 extension Compiler {
     enum Errors: Error, LocalizedError {
-        case programEnd(token: TokenInfo)
-        case wrongToken(token: TokenInfo?)
+        case programEnd(token: TokenDescription)
+        case wrongToken(token: TokenDescription?)
         case redeclaration(id: String)
         case cannotFindInScope(id: String)
         case typeMismatch(real: String, given: String)

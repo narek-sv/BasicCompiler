@@ -1,5 +1,5 @@
 //
-//  EBNFDescription+Basics.swift
+//  EBNFDescription.swift
 //  
 //
 //  Created by Narek Sahakyan on 5/2/22.
@@ -7,10 +7,10 @@
 
 import Foundation
 
-final class IdentifierFormDescription: EBNFDescription {
-    func parse(tokens: [TokenInfo]) throws -> EBNFDescriptionParseResult {
+final class EBNFIdentifierDescription: EBNFDescription {
+    func parse(tokens: [TokenDescription]) throws -> EBNFDescriptionParseResult {
         if let firstToken = tokens.first, case .identifier = firstToken.token {
-            try evaluate(form: self, index: 0, usedTokens: [firstToken])
+            try generate(description: self, index: 0, usedTokens: [firstToken])
             return .success(used: [firstToken], unused: Array(tokens.dropFirst()))
         }
         
@@ -18,10 +18,10 @@ final class IdentifierFormDescription: EBNFDescription {
     }
 }
 
-final class LiteralFormDescription: EBNFDescription {
-    func parse(tokens: [TokenInfo]) throws -> EBNFDescriptionParseResult {
+final class EBNFLiteralDescription: EBNFDescription {
+    func parse(tokens: [TokenDescription]) throws -> EBNFDescriptionParseResult {
         if let firstToken = tokens.first, case .literal = firstToken.token {
-            try evaluate(form: self, index: 0, usedTokens: [firstToken])
+            try generate(description: self, index: 0, usedTokens: [firstToken])
             return .success(used: [firstToken], unused: Array(tokens.dropFirst()))
         }
         
@@ -29,16 +29,16 @@ final class LiteralFormDescription: EBNFDescription {
     }
 }
 
-final class ConcreteTokenFormDescription: EBNFDescription {
+final class EBNFConcreteTokenDescription: EBNFDescription {
     let token: Token
     
     init(_ token: Token) {
         self.token = token
     }
     
-    func parse(tokens: [TokenInfo]) throws -> EBNFDescriptionParseResult {
+    func parse(tokens: [TokenDescription]) throws -> EBNFDescriptionParseResult {
         if let firstToken = tokens.first, token == firstToken.token {
-            try evaluate(form: self, index: 0, usedTokens: [firstToken])
+            try generate(description: self, index: 0, usedTokens: [firstToken])
             return .success(used: [firstToken], unused: Array(tokens.dropFirst()))
         }
         
@@ -46,20 +46,20 @@ final class ConcreteTokenFormDescription: EBNFDescription {
     }
 }
 
-final class OrFormDescription: EBNFDescription {
+final class EBNFOrDescription: EBNFDescription {
     let descriptors: [EBNFDescription]
     
     init(_ descriptors: [EBNFDescription]) {
         self.descriptors = descriptors
     }
     
-    func parse(tokens: [TokenInfo]) throws -> EBNFDescriptionParseResult {
+    func parse(tokens: [TokenDescription]) throws -> EBNFDescriptionParseResult {
         for descriptor in descriptors {
             let result = try descriptor.parse(tokens: tokens)
             
             switch result {
             case let .success(used, _):
-                try evaluate(form: self, index: 0, usedTokens: used)
+                try generate(description: self, index: 0, usedTokens: used)
                 return result
             default:
                 continue
@@ -70,15 +70,15 @@ final class OrFormDescription: EBNFDescription {
     }
 }
 
-final class OptionalFormDescription: EBNFDescription {
+final class EBNFOptionalDescription: EBNFDescription {
     let descriptors: [EBNFDescription]
     
     init(_ descriptors: [EBNFDescription]) {
         self.descriptors = descriptors
     }
     
-    func parse(tokens: [TokenInfo]) throws -> EBNFDescriptionParseResult {
-        var usedTokens = [TokenInfo]()
+    func parse(tokens: [TokenDescription]) throws -> EBNFDescriptionParseResult {
+        var usedTokens = [TokenDescription]()
         var unusedTokens = tokens
         
         for descriptor in descriptors {
@@ -89,25 +89,25 @@ final class OptionalFormDescription: EBNFDescription {
                 usedTokens += used
                 unusedTokens = unused
             case .failure:
-                try evaluate(form: self, index: 0, usedTokens: [])
+                try generate(description: self, index: 0, usedTokens: [])
                 return .success(used: [], unused: tokens)
             }
         }
         
-        try evaluate(form: self, index: 0, usedTokens: usedTokens)
+        try generate(description: self, index: 0, usedTokens: usedTokens)
         return .success(used: usedTokens, unused: unusedTokens)
     }
 }
 
-final class SequenceFormDescription: EBNFDescription {
+final class EBNFSequenceDescription: EBNFDescription {
     let descriptors: [EBNFDescription]
     
     init(_ descriptors: [EBNFDescription]) {
         self.descriptors = descriptors
     }
     
-    func parse(tokens: [TokenInfo]) throws -> EBNFDescriptionParseResult {
-        var usedTokens = [TokenInfo]()
+    func parse(tokens: [TokenDescription]) throws -> EBNFDescriptionParseResult {
+        var usedTokens = [TokenDescription]()
         var unusedTokens = tokens
         var lastOccurenceUsedTokens = usedTokens
         var lastOccurenceUnusedTokens = unusedTokens
@@ -121,7 +121,7 @@ final class SequenceFormDescription: EBNFDescription {
                     usedTokens += used
                     unusedTokens = unused
                 case .failure:
-                    try evaluate(form: self, index: 0, usedTokens: lastOccurenceUsedTokens)
+                    try generate(description: self, index: 0, usedTokens: lastOccurenceUsedTokens)
                     return .success(used: lastOccurenceUsedTokens, unused: lastOccurenceUnusedTokens)
                 }
             }

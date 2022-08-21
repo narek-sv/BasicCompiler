@@ -119,7 +119,7 @@ final class Parser {
         return nil
     }
 
-    private func nextToken() throws -> TokenInfo? {
+    private func nextToken() throws -> TokenDescription? {
         while let currentCharacter = currentCharacter, currentCharacter.isWhitespace {
             if currentCharacter.isNewline {
                 line += 1
@@ -163,8 +163,8 @@ final class Parser {
         throw Errors.notSupportedSymbol(line: line, offset: offset, symbol: currentCharacter)
     }
 
-    func parse() throws -> [TokenInfo] {
-        var tokens = [TokenInfo]()
+    func parse() throws -> [TokenDescription] {
+        var tokens = [TokenDescription]()
         
         while let token = try nextToken() {
             tokens.append(token)

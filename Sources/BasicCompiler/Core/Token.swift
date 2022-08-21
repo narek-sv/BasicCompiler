@@ -123,7 +123,7 @@ enum Lexem: String, CaseIterableToken, PrettyPrintable {
     case `import`
 }
 
-struct TokenInfo {
+struct TokenDescription {
     let line: Int
     let offset: Int
     let token: Token
