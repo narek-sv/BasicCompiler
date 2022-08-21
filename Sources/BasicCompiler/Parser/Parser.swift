@@ -8,7 +8,7 @@
 import Foundation
 
 final class Parser {
-    static let maxLexemLength = 128
+    static let maxLexemeLength = 128
 
     private let input: String
     private var index: String.Index
@@ -38,8 +38,8 @@ final class Parser {
         var length = 1
         while let character = currentCharacter, !character.isTerminalSymbol {
             length += 1
-            if length > Parser.maxLexemLength {
-                throw Errors.exceededLexemLength(line: line, offset: offset)
+            if length > Parser.maxLexemeLength {
+                throw Errors.exceededLexemeLength(line: line, offset: offset)
             }
             
             string.append(character)
@@ -56,8 +56,8 @@ final class Parser {
         var length = 1
         while let character = currentCharacter, !character.isTerminalSymbol {
             length += 1
-            if length > Parser.maxLexemLength {
-                throw Errors.exceededLexemLength(line: line, offset: offset)
+            if length > Parser.maxLexemeLength {
+                throw Errors.exceededLexemeLength(line: line, offset: offset)
             }
             
             string.append(character)
@@ -74,8 +74,8 @@ final class Parser {
         var length = 1
         while let character = currentCharacter, !character.isStringQuote, !character.isNewline {
             length += 1
-            if length > Parser.maxLexemLength {
-                throw Errors.exceededLexemLength(line: line, offset: offset)
+            if length > Parser.maxLexemeLength {
+                throw Errors.exceededLexemeLength(line: line, offset: offset)
             }
             
             string.append(character)
@@ -149,12 +149,12 @@ final class Parser {
                 return .init(line: line, offset: offset, token: .literal(.int(int)))
             }
             
-            throw Errors.invalidLexem(line: line, offset: offset, lexem: token)
+            throw Errors.invalidLexeme(line: line, offset: offset, lexeme: token)
         }
         
         if currentCharacter.isLetter, let token = try readIdentifier() {
-            if let lexem = Lexem(rawValue: token) {
-                return .init(line: line, offset: offset, token: .otherLexem(lexem))
+            if let lexeme = Lexeme(rawValue: token) {
+                return .init(line: line, offset: offset, token: .otherLexeme(lexeme))
             }
             
             return .init(line: line, offset: offset, token: .identifier(token))

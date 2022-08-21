@@ -11,9 +11,9 @@ final class EBNFProgramDescription: EBNFComplexDescription {
     lazy var descriptions: [EBNFDescription] = [
         EBNFProgramHeaderDescription().inject(resolveDataSegment),
         EBNFVariableDefinitionsDescription(),
-        EBNFConcreteTokenDescription(.otherLexem(.begin)).inject(resolveCodeSegment),
+        EBNFConcreteTokenDescription(.otherLexeme(.begin)).inject(resolveCodeSegment),
         EBNFStatementSequenceDescription(),
-        EBNFConcreteTokenDescription(.otherLexem(.end)),
+        EBNFConcreteTokenDescription(.otherLexeme(.end)),
         EBNFConcreteTokenDescription(.operator(.dot)).inject(resolveProgramEnd)
     ]
     
@@ -32,7 +32,7 @@ final class EBNFProgramDescription: EBNFComplexDescription {
 
 final class EBNFProgramHeaderDescription: EBNFComplexDescription {
     lazy var descriptions: [EBNFDescription] = [
-        EBNFConcreteTokenDescription(.otherLexem(.program)),
+        EBNFConcreteTokenDescription(.otherLexeme(.program)),
         EBNFIdentifierDescription().inject(resolveProgramName),
         EBNFConcreteTokenDescription(.operator(.semicolon))
     ]
@@ -47,7 +47,7 @@ final class EBNFProgramHeaderDescription: EBNFComplexDescription {
 final class EBNFVariableDefinitionsDescription: EBNFComplexDescription {
     lazy var descriptions: [EBNFDescription] = [
         EBNFOptionalDescription([
-            EBNFConcreteTokenDescription(.otherLexem(.var)),
+            EBNFConcreteTokenDescription(.otherLexeme(.var)),
             EBNFVariableSequenceDescription(),
             EBNFSequenceDescription([
                 EBNFVariableSequenceDescription()
@@ -85,7 +85,7 @@ final class EBNFVariableSequenceDescription: EBNFComplexDescription {
     }
     
     func resolveVariableType(usedTokens: [TokenDescription]) throws {
-        if case let .otherLexem(type) = usedTokens.first?.token {
+        if case let .otherLexeme(type) = usedTokens.first?.token {
             try variableNames.forEach {
                 try Generator.shared.declareVariable(name: $0, type: type.rawValue)
             }
@@ -208,14 +208,14 @@ final class EBNFOperandDescription: EBNFComplexDescription {
 final class EBNFTypeDescription: EBNFComplexDescription {
     lazy var descriptions: [EBNFDescription] = [
         EBNFOrDescription([
-            EBNFConcreteTokenDescription(.otherLexem(.integer)),
-            EBNFConcreteTokenDescription(.otherLexem(.string))
+            EBNFConcreteTokenDescription(.otherLexeme(.integer)),
+            EBNFConcreteTokenDescription(.otherLexeme(.string))
         ]).inject(resolveType)
     ]
     
     func resolveType(usedTokens: [TokenDescription]) throws {
-        if let first = usedTokens.first(where: { $0.token != .otherLexem(.integer) }) {
-            if case let .otherLexem(id) = first.token {
+        if let first = usedTokens.first(where: { $0.token != .otherLexeme(.integer) }) {
+            if case let .otherLexeme(id) = first.token {
                 throw Compiler.Errors.notSupportedType(id: id.rawValue)
             }
         }

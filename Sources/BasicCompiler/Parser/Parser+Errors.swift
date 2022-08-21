@@ -9,10 +9,10 @@ import Foundation
 
 extension Parser {
     enum Errors: Error, LocalizedError {
-        case exceededLexemLength(line: Int, offset: Int)
+        case exceededLexemeLength(line: Int, offset: Int)
         case notClosedString(line: Int, offset: Int)
         case notSupportedSymbol(line: Int, offset: Int, symbol: Character)
-        case invalidLexem(line: Int, offset: Int, lexem: String)
+        case invalidLexeme(line: Int, offset: Int, lexeme: String)
         
         var errorDescription: String? {
             return "\(self)"

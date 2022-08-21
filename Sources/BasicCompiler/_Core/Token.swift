@@ -76,7 +76,7 @@ enum Literal: PrettyPrintable {
         }
     }
     
-    var typeName: Lexem {
+    var typeName: Lexeme {
         switch self {
         case .int:      return .integer
         case .string:   return .string
@@ -91,7 +91,7 @@ enum Literal: PrettyPrintable {
     }
 }
 
-enum Lexem: String, CaseIterableToken, PrettyPrintable {
+enum Lexeme: String, CaseIterableToken, PrettyPrintable {
     case or
     case and
     case div
@@ -131,7 +131,7 @@ struct TokenDescription {
 
 enum Token: CustomStringConvertible, Equatable {
     case identifier(String)
-    case otherLexem(Lexem)
+    case otherLexeme(Lexeme)
     case parenthesis(Parenthesis)
     case literal(Literal)
     case `operator`(Operator)
@@ -139,7 +139,7 @@ enum Token: CustomStringConvertible, Equatable {
     var description: String {
         switch self {
         case .identifier(let string):       return "identifier(" + string + ")"
-        case .otherLexem(let lexem):        return "lexem(\(lexem))"
+        case .otherLexeme(let lexeme):      return "lexeme(\(lexeme))"
         case .parenthesis(let parenthesis): return "parenthesis(\(parenthesis))"
         case .literal(let literal):         return "literal(\(literal))"
         case .operator(let `operator`):     return "operator(\(`operator`))"
