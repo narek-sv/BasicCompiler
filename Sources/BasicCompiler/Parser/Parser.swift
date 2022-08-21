@@ -7,11 +7,7 @@
 
 import Foundation
 
-protocol ParserInterface {
-    func parse() throws -> [TokenDescription]
-}
-
-final class Parser: ParserInterface {
+final class Parser {
     static let maxLexemLength = 128
 
     private let input: String

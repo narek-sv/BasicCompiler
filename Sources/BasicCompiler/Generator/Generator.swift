@@ -7,30 +7,7 @@
 
 import Foundation
 
-protocol GeneratorInterface {
-    
-    // Program Configurations
-    func clear()
-    func setProgramName(_ name: String) throws
-    func startDataSegment()
-    func startCodeSegment()
-    func end()
-    
-    // Variables
-    func declareVariable(name: String, type: String) throws
-    
-    // Simple Assignment
-    func doSimpleAssignment(variable: String, literal: Literal) throws
-    func doSimpleAssignment(variable: String, value: String) throws
-    
-    // Complex Assignment
-    func doComplexAssignment(variable: String, lhs: String, rhs: String, operation: Operator) throws
-    func doComplexAssignment(variable: String, lhs: String, rhs: Literal, operation: Operator) throws
-    func doComplexAssignment(variable: String, lhs: Literal, rhs: String, operation: Operator) throws
-    func doComplexAssignment(variable: String, lhs: Literal, rhs: Literal, operation: Operator) throws
-}
-
-final class Generator: GeneratorInterface {
+final class Generator {
     static let shared = Generator()
     private var programName: String?
     private var variables = [String: String]()

@@ -8,9 +8,9 @@
 import Foundation
 
 final class Compiler {
-    let parser: ParserInterface
+    let parser: Parser
     
-    init(parser: ParserInterface) {
+    init(parser: Parser) {
         self.parser = parser
     }
     
