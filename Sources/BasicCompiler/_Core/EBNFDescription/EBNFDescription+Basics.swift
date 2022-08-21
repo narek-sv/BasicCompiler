@@ -8,9 +8,8 @@
 import Foundation
 
 final class EBNFIdentifierDescription: EBNFDescription {
-    func parse(tokens: [TokenDescription]) throws -> EBNFDescriptionParseResult {
+    func resolve(tokens: [TokenDescription]) throws -> EBNFDescriptionParseResult {
         if let firstToken = tokens.first, case .identifier = firstToken.token {
-            try generate(description: self, index: 0, usedTokens: [firstToken])
             return .success(used: [firstToken], unused: Array(tokens.dropFirst()))
         }
         
@@ -19,9 +18,8 @@ final class EBNFIdentifierDescription: EBNFDescription {
 }
 
 final class EBNFLiteralDescription: EBNFDescription {
-    func parse(tokens: [TokenDescription]) throws -> EBNFDescriptionParseResult {
+    func resolve(tokens: [TokenDescription]) throws -> EBNFDescriptionParseResult {
         if let firstToken = tokens.first, case .literal = firstToken.token {
-            try generate(description: self, index: 0, usedTokens: [firstToken])
             return .success(used: [firstToken], unused: Array(tokens.dropFirst()))
         }
         
@@ -36,9 +34,8 @@ final class EBNFConcreteTokenDescription: EBNFDescription {
         self.token = token
     }
     
-    func parse(tokens: [TokenDescription]) throws -> EBNFDescriptionParseResult {
+    func resolve(tokens: [TokenDescription]) throws -> EBNFDescriptionParseResult {
         if let firstToken = tokens.first, token == firstToken.token {
-            try generate(description: self, index: 0, usedTokens: [firstToken])
             return .success(used: [firstToken], unused: Array(tokens.dropFirst()))
         }
         
@@ -53,13 +50,12 @@ final class EBNFOrDescription: EBNFDescription {
         self.descriptors = descriptors
     }
     
-    func parse(tokens: [TokenDescription]) throws -> EBNFDescriptionParseResult {
+    func resolve(tokens: [TokenDescription]) throws -> EBNFDescriptionParseResult {
         for descriptor in descriptors {
-            let result = try descriptor.parse(tokens: tokens)
+            let result = try descriptor.resolve(tokens: tokens)
             
             switch result {
-            case let .success(used, _):
-                try generate(description: self, index: 0, usedTokens: used)
+            case .success:
                 return result
             default:
                 continue
@@ -77,24 +73,22 @@ final class EBNFOptionalDescription: EBNFDescription {
         self.descriptors = descriptors
     }
     
-    func parse(tokens: [TokenDescription]) throws -> EBNFDescriptionParseResult {
+    func resolve(tokens: [TokenDescription]) throws -> EBNFDescriptionParseResult {
         var usedTokens = [TokenDescription]()
         var unusedTokens = tokens
         
         for descriptor in descriptors {
-            let result = try descriptor.parse(tokens: unusedTokens)
+            let result = try descriptor.resolve(tokens: unusedTokens)
             
             switch result {
             case let .success(used, unused):
                 usedTokens += used
                 unusedTokens = unused
             case .failure:
-                try generate(description: self, index: 0, usedTokens: [])
                 return .success(used: [], unused: tokens)
             }
         }
         
-        try generate(description: self, index: 0, usedTokens: usedTokens)
         return .success(used: usedTokens, unused: unusedTokens)
     }
 }
@@ -106,7 +100,7 @@ final class EBNFSequenceDescription: EBNFDescription {
         self.descriptors = descriptors
     }
     
-    func parse(tokens: [TokenDescription]) throws -> EBNFDescriptionParseResult {
+    func resolve(tokens: [TokenDescription]) throws -> EBNFDescriptionParseResult {
         var usedTokens = [TokenDescription]()
         var unusedTokens = tokens
         var lastOccurenceUsedTokens = usedTokens
@@ -114,14 +108,13 @@ final class EBNFSequenceDescription: EBNFDescription {
         
         while true {
             for descriptor in descriptors {
-                let result = try descriptor.parse(tokens: unusedTokens)
+                let result = try descriptor.resolve(tokens: unusedTokens)
 
                 switch result {
                 case let .success(used, unused):
                     usedTokens += used
                     unusedTokens = unused
                 case .failure:
-                    try generate(description: self, index: 0, usedTokens: lastOccurenceUsedTokens)
                     return .success(used: lastOccurenceUsedTokens, unused: lastOccurenceUnusedTokens)
                 }
             }

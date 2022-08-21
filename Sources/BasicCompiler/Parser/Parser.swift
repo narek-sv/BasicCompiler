@@ -7,7 +7,11 @@
 
 import Foundation
 
-final class Parser {
+protocol ParserInterface {
+    func parse() throws -> [TokenDescription]
+}
+
+final class Parser: ParserInterface {
     static let maxLexemLength = 128
 
     private let input: String
@@ -174,15 +178,3 @@ final class Parser {
     }
 }
 
-extension Parser {
-    enum Errors: Error, LocalizedError {
-        case exceededLexemLength(line: Int, offset: Int)
-        case notClosedString(line: Int, offset: Int)
-        case notSupportedSymbol(line: Int, offset: Int, symbol: Character)
-        case invalidLexem(line: Int, offset: Int, lexem: String)
-        
-        var errorDescription: String? {
-            return "\(self)"
-        }
-    }
-}

@@ -1,36 +1,11 @@
 //
-//  Compiler.swift
+//  Compiler+Errors.swift
 //  
 //
-//  Created by Narek Sahakyan on 5/2/22.
+//  Created by Narek Sahakyan on 8/21/22.
 //
 
 import Foundation
-
-final class Compiler: EBNFComplexDescription {
-    static var description: [EBNFDescription] {
-        [EBNFProgramDescription()]
-    }
-    
-    let parser: Parser
-    
-    init(parser: Parser) {
-        self.parser = parser
-    }
-    
-    func compile() throws {
-        let result = try parse(tokens: try parser.parse())
-        
-        switch result {
-        case let .success(used: _, unused: unused) where unused.isEmpty:
-            return
-        case let .success(used: _, unused: unused):
-            throw Compiler.Errors.programEnd(token: unused[0])
-        case let .failure(error: error):
-            throw error
-        }
-    }
-}
 
 extension Compiler {
     enum Errors: Error, LocalizedError {

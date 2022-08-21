@@ -8,28 +8,29 @@
 import Foundation
 
 protocol EBNFDescription {
-    func parse(tokens: [TokenDescription]) throws -> EBNFDescriptionParseResult
+    func resolve(tokens: [TokenDescription]) throws -> EBNFDescriptionParseResult
+}
+
+protocol EBNFSelfContainingDescription: EBNFDescription {
     func generate(description: EBNFDescription, index: Int, usedTokens: [TokenDescription]) throws
+    func clearCache()
 }
 
-extension EBNFDescription {
-    func generate(description: EBNFDescription, index: Int, usedTokens: [TokenDescription]) throws { }
-}
-
-protocol EBNFComplexDescription: EBNFDescription {
+protocol EBNFComplexDescription: EBNFSelfContainingDescription {
     static var description: [EBNFDescription] { get }
 }
 
 extension EBNFComplexDescription {
-    func parse(tokens: [TokenDescription]) throws -> EBNFDescriptionParseResult {
+    func resolve(tokens: [TokenDescription]) throws -> EBNFDescriptionParseResult {
         var usedTokens = [TokenDescription]()
         var unusedTokens = tokens
         
         for (index, description) in Self.description.enumerated() {
-            let result = try description.parse(tokens: unusedTokens)
+            let result = try description.resolve(tokens: unusedTokens)
             
             switch result {
             case .failure:
+                clearCache()
                 return result
             case let .success(used, unused):
                 unusedTokens = unused
@@ -39,8 +40,12 @@ extension EBNFComplexDescription {
             }
         }
         
+        clearCache()
         return .success(used: usedTokens, unused: unusedTokens)
     }
+    
+    func generate(description: EBNFDescription, index: Int, usedTokens: [TokenDescription]) throws { }
+    func clearCache() { }
 }
 
 enum EBNFDescriptionParseResult: Error {

@@ -55,6 +55,8 @@ final class EBNFVariableDefinitionsDescription: EBNFComplexDescription {
 }
 
 final class EBNFVariableSequenceDescription: EBNFComplexDescription {
+    private var variableNames = [String]()
+
     static let description: [EBNFDescription] = [
         EBNFIdentifierDescription(),
         EBNFSequenceDescription([
@@ -64,9 +66,7 @@ final class EBNFVariableSequenceDescription: EBNFComplexDescription {
         EBNFConcreteTokenDescription(.operator(.colon)),
         EBNFTypeDescription(),
         EBNFConcreteTokenDescription(.operator(.semicolon))
-    ]
-    
-    private var variableNames = [String]()
+    ]    
     
     func generate(description: EBNFDescription, index: Int, usedTokens: [TokenDescription]) throws {
         if index == 0, case let .identifier(id) = usedTokens.first?.token {
@@ -81,9 +81,11 @@ final class EBNFVariableSequenceDescription: EBNFComplexDescription {
             try variableNames.forEach {
                 try Generator.shared.declareVariable(name: $0, type: type.rawValue)
             }
-            
-            variableNames.removeAll()
         }
+    }
+    
+    func clearCache() {
+        variableNames.removeAll()
     }
 }
 
@@ -99,14 +101,14 @@ final class EBNFStatementSequenceDescription: EBNFComplexDescription {
 }
 
 final class EBNFSimpleAssignmentDescription: EBNFComplexDescription {
+    private(set) var variableName = ""
+
     static let description: [EBNFDescription] = [
         EBNFIdentifierDescription(),
         EBNFConcreteTokenDescription(.operator(.assign)),
         EBNFOperandDescription(),
         EBNFConcreteTokenDescription(.operator(.semicolon))
     ]
-    
-    private(set) var variableName = ""
     
     func generate(description: EBNFDescription, index: Int, usedTokens: [TokenDescription]) throws {
         if index == 0, case let .identifier(id) = usedTokens.first?.token {
@@ -119,9 +121,18 @@ final class EBNFSimpleAssignmentDescription: EBNFComplexDescription {
             }
         }
     }
+    
+    func clearCache() {
+        variableName = ""
+    }
 }
 
 final class EBNFComplexAssignmentDescription: EBNFComplexDescription {
+    private(set) var variableName = ""
+    private(set) var lhsVar: String?
+    private(set) var lhsLit: Literal?
+    private(set) var operation: Operator = .plus
+    
     static let description: [EBNFDescription] = [
         EBNFIdentifierDescription(),
         EBNFConcreteTokenDescription(.operator(.assign)),
@@ -130,12 +141,7 @@ final class EBNFComplexAssignmentDescription: EBNFComplexDescription {
         EBNFOperandDescription(),
         EBNFConcreteTokenDescription(.operator(.semicolon))
     ]
-    
-    private(set) var variableName = ""
-    private(set) var lhsVar: String?
-    private(set) var lhsLit: Literal?
-    private(set) var operation: Operator = .plus
-    
+        
     func generate(description: EBNFDescription, index: Int, usedTokens: [TokenDescription]) throws {
         if index == 0, case let .identifier(id) = usedTokens.first?.token {
             variableName = id
@@ -161,10 +167,14 @@ final class EBNFComplexAssignmentDescription: EBNFComplexDescription {
                     try Generator.shared.doComplexAssignment(variable: variableName, lhs: lhsLit, rhs: lit, operation: operation)
                 }
             }
-            
-            lhsVar = nil
-            lhsLit = nil
         }
+    }
+    
+    func clearCache() {
+        variableName = ""
+        lhsVar = nil
+        lhsLit = nil
+        operation = .plus
     }
 }
 
