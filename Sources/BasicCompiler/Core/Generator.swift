@@ -1,5 +1,5 @@
 //
-//  Evaluator.swift
+//  Generator.swift
 //  
 //
 //  Created by Narek Sahakyan on 5/2/22.
@@ -7,8 +7,8 @@
 
 import Foundation
 
-final class Evaluator {
-    static let shared = Evaluator()
+final class Generator {
+    static let shared = Generator()
     private var programName: String?
     private var variables = [String: String]()
     private var values = [String: Bool]()

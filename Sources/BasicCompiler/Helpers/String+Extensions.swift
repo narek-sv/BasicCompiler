@@ -26,7 +26,7 @@ extension Character {
         return self == "\""
     }
     
-    var isFloatingPoint: Bool {
+    var isFloatingPointDot: Bool {
         return self == "."
     }
     
@@ -34,7 +34,7 @@ extension Character {
         return isLetter || isNumber
     }
     
-    var isTerminal: Bool {
+    var isTerminalSymbol: Bool {
         return Operator.prefixes.contains(self) || Parenthesis.prefixes.contains(self) || isWhitespace || isStringQuote
     }
 }

@@ -1,6 +1,6 @@
 //
 //  Tokens.swift
-//  Compiler
+//  
 //
 //  Created by Narek Sahakyan on 2/7/22.
 //
@@ -123,7 +123,7 @@ enum Lexem: String, CaseIterableToken, PrettyPrintable {
     case `import`
 }
 
-struct TokenExpression {
+struct TokenInfo {
     let line: Int
     let offset: Int
     let token: Token

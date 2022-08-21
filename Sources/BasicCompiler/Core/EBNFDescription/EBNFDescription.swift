@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  EBNFDescription.swift
 //  
 //
 //  Created by Narek Sahakyan on 5/2/22.
@@ -7,22 +7,22 @@
 
 import Foundation
 
-protocol FormDescription {
-    func parse(tokens: [TokenExpression]) throws -> FormDescriptorResult
-    func evaluate(form: FormDescription, index: Int, usedTokens: [TokenExpression]) throws
+protocol EBNFDescription {
+    func parse(tokens: [TokenInfo]) throws -> EBNFDescriptionParseResult
+    func evaluate(form: EBNFDescription, index: Int, usedTokens: [TokenInfo]) throws
 }
 
-extension FormDescription {
-    func evaluate(form: FormDescription, index: Int, usedTokens: [TokenExpression]) throws { }
+extension EBNFDescription {
+    func evaluate(form: EBNFDescription, index: Int, usedTokens: [TokenInfo]) throws { }
 }
 
-protocol ComplexFormDescription: FormDescription {
-    static var form: [FormDescription] { get }
+protocol EBNFComplexDescription: EBNFDescription {
+    static var form: [EBNFDescription] { get }
 }
 
-extension ComplexFormDescription {
-    func parse(tokens: [TokenExpression]) throws -> FormDescriptorResult {
-        var usedTokens = [TokenExpression]()
+extension EBNFComplexDescription {
+    func parse(tokens: [TokenInfo]) throws -> EBNFDescriptionParseResult {
+        var usedTokens = [TokenInfo]()
         var unusedTokens = tokens
         
         for (index, descriptor) in Self.form.enumerated() {
@@ -43,7 +43,7 @@ extension ComplexFormDescription {
     }
 }
 
-enum FormDescriptorResult: Error {
-    case success(used: [TokenExpression], unused: [TokenExpression])
+enum EBNFDescriptionParseResult: Error {
+    case success(used: [TokenInfo], unused: [TokenInfo])
     case failure(error: Compiler.Errors)
 }

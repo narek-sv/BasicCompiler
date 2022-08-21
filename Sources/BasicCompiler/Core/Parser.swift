@@ -1,6 +1,6 @@
 //
 //  Parser.swift
-//  Parser
+//  
 //
 //  Created by Narek Sahakyan on 2/7/22.
 //
@@ -36,7 +36,7 @@ final class Parser {
         nextIndex()
         
         var length = 1
-        while let character = currentCharacter, !character.isTerminal {
+        while let character = currentCharacter, !character.isTerminalSymbol {
             length += 1
             if length > Parser.maxLexemLength {
                 throw Errors.exceededLexemLength(line: line, offset: offset)
@@ -54,7 +54,7 @@ final class Parser {
         nextIndex()
 
         var length = 1
-        while let character = currentCharacter, !character.isTerminal {
+        while let character = currentCharacter, !character.isTerminalSymbol {
             length += 1
             if length > Parser.maxLexemLength {
                 throw Errors.exceededLexemLength(line: line, offset: offset)
@@ -119,7 +119,7 @@ final class Parser {
         return nil
     }
 
-    private func nextToken() throws -> TokenExpression? {
+    private func nextToken() throws -> TokenInfo? {
         while let currentCharacter = currentCharacter, currentCharacter.isWhitespace {
             if currentCharacter.isNewline {
                 line += 1
@@ -163,8 +163,8 @@ final class Parser {
         throw Errors.notSupportedSymbol(line: line, offset: offset, symbol: currentCharacter)
     }
 
-    func parse() throws -> [TokenExpression] {
-        var tokens = [TokenExpression]()
+    func parse() throws -> [TokenInfo] {
+        var tokens = [TokenInfo]()
         
         while let token = try nextToken() {
             tokens.append(token)
