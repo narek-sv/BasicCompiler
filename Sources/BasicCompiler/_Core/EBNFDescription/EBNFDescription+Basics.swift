@@ -1,6 +1,6 @@
 //
 //  EBNFDescription.swift
-//  
+//
 //
 //  Created by Narek Sahakyan on 5/2/22.
 //
@@ -10,6 +10,7 @@ import Foundation
 final class EBNFIdentifierDescription: EBNFDescription {
     func resolve(tokens: [TokenDescription]) throws -> EBNFDescriptionParseResult {
         if let firstToken = tokens.first, case .identifier = firstToken.token {
+            try handler?([firstToken])
             return .success(used: [firstToken], unused: Array(tokens.dropFirst()))
         }
         
@@ -20,6 +21,7 @@ final class EBNFIdentifierDescription: EBNFDescription {
 final class EBNFLiteralDescription: EBNFDescription {
     func resolve(tokens: [TokenDescription]) throws -> EBNFDescriptionParseResult {
         if let firstToken = tokens.first, case .literal = firstToken.token {
+            try handler?([firstToken])
             return .success(used: [firstToken], unused: Array(tokens.dropFirst()))
         }
         
@@ -36,6 +38,7 @@ final class EBNFConcreteTokenDescription: EBNFDescription {
     
     func resolve(tokens: [TokenDescription]) throws -> EBNFDescriptionParseResult {
         if let firstToken = tokens.first, token == firstToken.token {
+            try handler?([firstToken])
             return .success(used: [firstToken], unused: Array(tokens.dropFirst()))
         }
         
@@ -55,7 +58,8 @@ final class EBNFOrDescription: EBNFDescription {
             let result = try descriptor.resolve(tokens: tokens)
             
             switch result {
-            case .success:
+            case let .success(used, _):
+                try handler?(used)
                 return result
             default:
                 continue
@@ -85,10 +89,12 @@ final class EBNFOptionalDescription: EBNFDescription {
                 usedTokens += used
                 unusedTokens = unused
             case .failure:
+                try handler?([])
                 return .success(used: [], unused: tokens)
             }
         }
         
+        try handler?(usedTokens)
         return .success(used: usedTokens, unused: unusedTokens)
     }
 }
@@ -115,6 +121,7 @@ final class EBNFSequenceDescription: EBNFDescription {
                     usedTokens += used
                     unusedTokens = unused
                 case .failure:
+                    try handler?(lastOccurenceUsedTokens)
                     return .success(used: lastOccurenceUsedTokens, unused: lastOccurenceUnusedTokens)
                 }
             }

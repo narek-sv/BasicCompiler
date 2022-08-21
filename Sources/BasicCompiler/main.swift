@@ -40,6 +40,8 @@ func run(arguments: [String]) {
         
         let testFile = try! String(contentsOf: URL(fileURLWithPath: "/Users/narek.sahakyan/Documents/Projects/SwiftCompiler/BasicCompiler/Sources/test.s"))
         print(testFile)
+        print("--------------------------")
+        print("--------------------------")
         print(Generator.shared.assemblyCode)
         
         if (testFile.trimmingCharacters(in: .whitespacesAndNewlines) != Generator.shared.assemblyCode.trimmingCharacters(in: .whitespacesAndNewlines)) {

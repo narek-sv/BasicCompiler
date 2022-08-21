@@ -7,17 +7,26 @@
 
 import Foundation
 
-protocol EBNFDescription {
+protocol EBNFDescription: AnyObject {    
     func resolve(tokens: [TokenDescription]) throws -> EBNFDescriptionParseResult
-}
-
-protocol EBNFSelfContainingDescription: EBNFDescription {
-    func generate(description: EBNFDescription, index: Int, usedTokens: [TokenDescription]) throws
     func clearCache()
 }
 
-protocol EBNFComplexDescription: EBNFSelfContainingDescription {
-    static var description: [EBNFDescription] { get }
+extension EBNFDescription {
+    func inject(_ handler: @escaping ([TokenDescription]) throws -> ()) -> Self {
+        EnvironmentVariables.shared.setHandler(handler, for: self)
+        return self
+    }
+    
+    var handler: (([TokenDescription]) throws -> ())? {
+        EnvironmentVariables.shared.getHandler(for: self)
+    }
+    
+    func clearCache() { }
+}
+
+protocol EBNFComplexDescription: EBNFDescription {
+    var descriptions: [EBNFDescription] { get }
 }
 
 extension EBNFComplexDescription {
@@ -25,27 +34,24 @@ extension EBNFComplexDescription {
         var usedTokens = [TokenDescription]()
         var unusedTokens = tokens
         
-        for (index, description) in Self.description.enumerated() {
+        for description in descriptions {
             let result = try description.resolve(tokens: unusedTokens)
             
             switch result {
             case .failure:
+                description.clearCache()
                 clearCache()
                 return result
             case let .success(used, unused):
                 unusedTokens = unused
                 usedTokens += used
-                
-                try generate(description: description, index: index, usedTokens: used)
             }
         }
         
-        clearCache()
+        try handler?(usedTokens)
+        self.clearCache()
         return .success(used: usedTokens, unused: unusedTokens)
     }
-    
-    func generate(description: EBNFDescription, index: Int, usedTokens: [TokenDescription]) throws { }
-    func clearCache() { }
 }
 
 enum EBNFDescriptionParseResult: Error {
