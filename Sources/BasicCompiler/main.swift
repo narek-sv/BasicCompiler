@@ -35,18 +35,7 @@ func run(arguments: [String]) {
         
         let sourceFileName = URL(fileURLWithPath: filePath).deletingPathExtension().lastPathComponent
         let asmFileURL = currentDirectoryURL.appendingPathComponent(sourceFileName).appendingPathExtension("s")
-//        try Evaluator.shared.assemblyCode.data(using: .utf8)?.write(to: asmFileURL)
-        
-        
-        let testFile = try! String(contentsOf: URL(fileURLWithPath: "/Users/narek.sahakyan/Documents/Projects/SwiftCompiler/BasicCompiler/Sources/test.s"))
-        print(testFile)
-        print("--------------------------")
-        print("--------------------------")
-        print(Generator.shared.assemblyCode)
-        
-        if (testFile.trimmingCharacters(in: .whitespacesAndNewlines) != Generator.shared.assemblyCode.trimmingCharacters(in: .whitespacesAndNewlines)) {
-            fatalError()
-        }
+        try Generator.shared.assemblyCode.data(using: .utf8)?.write(to: asmFileURL)
     } catch let error as Parser.Errors {
         print("Failed to parse the file with error: \(error.localizedDescription)")
     } catch let error as Compiler.Errors {
@@ -56,8 +45,5 @@ func run(arguments: [String]) {
     }
 }
 
-run(arguments: ["", "/Users/narek.sahakyan/Documents/Projects/SwiftCompiler/BasicCompiler/Sources/test.pas"])
-//run(arguments: ["", "../test.pas"])
-//run(arguments: ["", "aaaaa.aaaa"])
+run(arguments: CommandLine.arguments)
 
-//run(arguments: CommandLine.arguments)

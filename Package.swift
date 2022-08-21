@@ -4,7 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "BasicCompiler",
-    targets: 
+    targets: [
         .executableTarget(
             name: "BasicCompiler",
             dependencies: [])
