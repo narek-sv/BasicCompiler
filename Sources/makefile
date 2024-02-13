@@ -6,12 +6,11 @@ ASM_FILE = '$(INPUT_FILE_NAME).s'
 OBJ_FILE = '$(INPUT_FILE_NAME).o'
 OUTPUT_FILE = INPUT_FILE_NAME
 
-all:
-	swift build
-	
+build:
+	swift build --configuration 'release'
 
-test:
-	swift run SwiftCompiler $(INPUT_FILE)
+run:
+	swift run BasicCompiler $(INPUT_FILE)
 	as -o $(OBJ_FILE) $(ASM_FILE)
 	ld -o $(INPUT_FILE_NAME) $(OBJ_FILE)
 	

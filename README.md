@@ -24,9 +24,11 @@ mathOp            = "+" | "-"
 
 ## Instructions
 1) Download or clone the project.
-2) Go to the root folder and run ```cd BasicCompiler```.
-3) Run ```make all``` to build the package.
-4) Run ```make test``` to test the package.
+2) Go to the root folder and run ```cd Sources```.
+3) Run ```make build``` to build the compiler.
+4) Run ```make run``` to run the compiler.
+
+Your compiled program will exit with a status code equal to your last assignment.
 
 
 ## Build-time error handling

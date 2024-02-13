@@ -8,7 +8,7 @@
 import Foundation
 
 extension String {
-    subscript(offset: String.IndexDistance) -> Character? {
+    subscript(offset: Int) -> Character? {
         if let index = index(startIndex, offsetBy: offset, limitedBy: index(before: endIndex)) {
             return self[index]
         }
