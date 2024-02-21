@@ -9,9 +9,9 @@ import Foundation
 
 func run(arguments: [String]) {
     Generator.shared.clear()
-    
+        
     guard arguments.indices.contains(1) else {
-        print(Compiler.Errors.sourceFileNotProvided.localizedDescription)
+        Logger.shared.log(Compiler.Error.sourceFileNotProvided)
         return
     }
     
@@ -24,7 +24,7 @@ func run(arguments: [String]) {
     } else if FileManager.default.fileExists(atPath: filePath) {
         url = URL(fileURLWithPath: filePath)
     } else {
-        print(Compiler.Errors.sourceFileDoesnNotExist(filename: filePath).localizedDescription)
+        print(Compiler.Error.sourceFileDoesnNotExist(filename: filePath).localizedDescription)
         return
     }
         
@@ -36,9 +36,9 @@ func run(arguments: [String]) {
         let sourceFileName = URL(fileURLWithPath: filePath).deletingPathExtension().lastPathComponent
         let asmFileURL = currentDirectoryURL.appendingPathComponent(sourceFileName).appendingPathExtension("s")
         try Generator.shared.assemblyCode.data(using: .utf8)?.write(to: asmFileURL)
-    } catch let error as Parser.Errors {
+    } catch let error as Parser.Error {
         print("Failed to parse the file with error: \(error.localizedDescription)")
-    } catch let error as Compiler.Errors {
+    } catch let error as Compiler.Error {
         print("Failed to compile the file with error: \(error.localizedDescription)")
     } catch {
         print("Failed with error: \(error.localizedDescription)")

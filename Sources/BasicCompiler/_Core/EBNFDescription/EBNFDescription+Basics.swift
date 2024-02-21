@@ -66,7 +66,7 @@ final class EBNFOrDescription: EBNFDescription {
             }
         }
         
-        return .failure(error: Compiler.Errors.wrongToken(token: tokens.first))
+        return .failure(error: Compiler.Error.wrongToken(token: tokens.first))
     }
 }
 

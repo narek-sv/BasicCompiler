@@ -216,7 +216,7 @@ final class EBNFTypeDescription: EBNFComplexDescription {
     func resolveType(usedTokens: [TokenDescription]) throws {
         if let first = usedTokens.first(where: { $0.token != .otherLexeme(.integer) }) {
             if case let .otherLexeme(id) = first.token {
-                throw Compiler.Errors.notSupportedType(id: id.rawValue)
+                throw Compiler.Error.notSupportedType(id: id.rawValue)
             }
         }
     }

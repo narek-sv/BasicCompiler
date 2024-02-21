@@ -56,5 +56,5 @@ extension EBNFComplexDescription {
 
 enum EBNFDescriptionParseResult: Error {
     case success(used: [TokenDescription], unused: [TokenDescription])
-    case failure(error: Compiler.Errors)
+    case failure(error: Compiler.Error)
 }
