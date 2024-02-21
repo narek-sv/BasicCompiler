@@ -17,7 +17,17 @@ extension String {
     }
     
     func offset(from index: String.Index) -> Int {
-        return distance(from: startIndex, to: index)
+        distance(from: startIndex, to: index)
+    }
+    
+    func removingPrefix(_ prefix: String) -> String {
+        guard hasPrefix(prefix) else { return self }
+        return String(dropFirst(prefix.count))
+    }
+    
+    func removingSuffix(_ suffix: String) -> String {
+        guard hasSuffix(suffix) else { return self }
+        return String(dropLast(suffix.count))
     }
 }
 

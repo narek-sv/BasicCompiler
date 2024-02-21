@@ -39,7 +39,7 @@ final class Parser {
         while let character = currentCharacter, !character.isTerminalSymbol {
             length += 1
             if length > Parser.maxLexemeLength {
-                throw Errors.exceededLexemeLength(line: line, offset: offset)
+                throw Error.exceededLexemeLength(line: line, offset: offset)
             }
             
             string.append(character)
@@ -57,7 +57,7 @@ final class Parser {
         while let character = currentCharacter, !character.isTerminalSymbol {
             length += 1
             if length > Parser.maxLexemeLength {
-                throw Errors.exceededLexemeLength(line: line, offset: offset)
+                throw Error.exceededLexemeLength(line: line, offset: offset)
             }
             
             string.append(character)
@@ -75,7 +75,7 @@ final class Parser {
         while let character = currentCharacter, !character.isStringQuote, !character.isNewline {
             length += 1
             if length > Parser.maxLexemeLength {
-                throw Errors.exceededLexemeLength(line: line, offset: offset)
+                throw Error.exceededLexemeLength(line: line, offset: offset)
             }
             
             string.append(character)
@@ -88,7 +88,7 @@ final class Parser {
             return string
         }
         
-        throw Errors.notClosedString(line: line, offset: offset)
+        throw Error.notClosedString(line: line, offset: offset)
     }
     
     private func readToken<T: CaseIterableToken>() -> T? {
@@ -149,7 +149,7 @@ final class Parser {
                 return .init(line: line, offset: offset, token: .literal(.int(int)))
             }
             
-            throw Errors.invalidLexeme(line: line, offset: offset, lexeme: token)
+            throw Error.invalidLexeme(lexeme: token, line: line, offset: offset)
         }
         
         if currentCharacter.isLetter, let token = try readIdentifier() {
@@ -160,7 +160,7 @@ final class Parser {
             return .init(line: line, offset: offset, token: .identifier(token))
         }
         
-        throw Errors.notSupportedSymbol(line: line, offset: offset, symbol: currentCharacter)
+        throw Error.notSupportedSymbol(symbol: currentCharacter, line: line, offset: offset)
     }
 
     func parse() throws -> [TokenDescription] {

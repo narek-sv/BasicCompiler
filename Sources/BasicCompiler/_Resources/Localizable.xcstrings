@@ -1,0 +1,171 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Compiler.Error.cannotFindInScope[%@]" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Variable '%1$@' not found in current scope."
+          }
+        }
+      }
+    },
+    "Compiler.Error.notInitialized[%@]" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Variable '%1$@' used before being initialized."
+          }
+        }
+      }
+    },
+    "Compiler.Error.notSupportedType[%@]" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Type '%1$@' currently is not supported."
+          }
+        }
+      }
+    },
+    "Compiler.Error.other[%@]" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unexpected error '%1$@'."
+          }
+        }
+      }
+    },
+    "Compiler.Error.programEnd[%lld|%lld|%@]" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Program should end at line %1$lld, offset %2$lld, but '%3$@' was encountered instead."
+          }
+        }
+      }
+    },
+    "Compiler.Error.redeclaration[%@]" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Variable '%1$@' already declared in this scope."
+          }
+        }
+      }
+    },
+    "Compiler.Error.sourceFileDoesnNotExist[%@]" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Source file '%1$@' does not exist."
+          }
+        }
+      }
+    },
+    "Compiler.Error.sourceFileNotProvided" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No source file provided."
+          }
+        }
+      }
+    },
+    "Compiler.Error.typeMismatch[%@|%@]" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cannot assign value of type '%1$@' to type '%2$@'"
+          }
+        }
+      }
+    },
+    "Compiler.Error.wrongToken" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unexpected end of file."
+          }
+        }
+      }
+    },
+    "Compiler.Error.wrongToken[%lld|%lld|%@]" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unexpected token '%3$@' at line %1$lld, offset %2$lld."
+          }
+        }
+      }
+    },
+    "Parser.Error.exceededLexemeLength[%lld|%lld]" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lexeme exceeds maximum length at line %1$lld, offset %2$lld."
+          }
+        }
+      }
+    },
+    "Parser.Error.invalidLexeme[%@|%lld|%lld]" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invalid lexeme '%1$@' at line %2$lld, offset %3$lld."
+          }
+        }
+      }
+    },
+    "Parser.Error.notClosedString[%lld|%lld]" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unclosed string detected at line %1$lld, offset %2$lld."
+          }
+        }
+      }
+    },
+    "Parser.Error.notSupportedSymbol[%@|%lld|%lld]" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unsupported symbol '%1$@' at line %2$lld, offset %3$lld."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

@@ -52,11 +52,11 @@ final class Generator {
     
     func declareVariable(name: String, type: String) throws {
         guard name != programName else {
-            throw Compiler.Errors.redeclaration(id: name)
+            throw Compiler.Error.redeclaration(id: name)
         }
         
         guard variables[name] == nil else {
-            throw Compiler.Errors.redeclaration(id: name)
+            throw Compiler.Error.redeclaration(id: name)
         }
         
         variables[name] = type
@@ -69,11 +69,11 @@ final class Generator {
     
     func doSimpleAssignment(variable: String, literal: Literal) throws {
         guard let type = variables[variable] else {
-            throw Compiler.Errors.cannotFindInScope(id: variable)
+            throw Compiler.Error.cannotFindInScope(id: variable)
         }
         
         guard type == literal.typeName.rawValue else {
-            throw Compiler.Errors.typeMismatch(real: type, given: literal.typeName.rawValue)
+            throw Compiler.Error.typeMismatch(real: type, given: literal.typeName.rawValue)
         }
         
         values[variable] = true
@@ -85,19 +85,19 @@ final class Generator {
     
     func doSimpleAssignment(variable: String, value: String) throws {
         guard let type = variables[variable] else {
-            throw Compiler.Errors.cannotFindInScope(id: variable)
+            throw Compiler.Error.cannotFindInScope(id: variable)
         }
         
         guard let vType = variables[value] else {
-            throw Compiler.Errors.cannotFindInScope(id: value)
+            throw Compiler.Error.cannotFindInScope(id: value)
         }
         
         guard type == vType else {
-            throw Compiler.Errors.typeMismatch(real: type, given: vType)
+            throw Compiler.Error.typeMismatch(real: type, given: vType)
         }
         
         guard values[value] == true else {
-            throw Compiler.Errors.notInitialized(id: value)
+            throw Compiler.Error.notInitialized(id: value)
         }
         
         values[variable] = true
@@ -112,31 +112,31 @@ final class Generator {
     
     func doComplexAssignment(variable: String, lhs: String, rhs: String, operation: Operator) throws {
         guard let type = variables[variable] else {
-            throw Compiler.Errors.cannotFindInScope(id: variable)
+            throw Compiler.Error.cannotFindInScope(id: variable)
         }
         
         guard let lType = variables[lhs] else {
-            throw Compiler.Errors.cannotFindInScope(id: lhs)
+            throw Compiler.Error.cannotFindInScope(id: lhs)
         }
         
         guard let rType = variables[rhs] else {
-            throw Compiler.Errors.cannotFindInScope(id: rhs)
+            throw Compiler.Error.cannotFindInScope(id: rhs)
         }
         
         guard type == lType else {
-            throw Compiler.Errors.typeMismatch(real: type, given: lType)
+            throw Compiler.Error.typeMismatch(real: type, given: lType)
         }
         
         guard type == rType else {
-            throw Compiler.Errors.typeMismatch(real: type, given: rType)
+            throw Compiler.Error.typeMismatch(real: type, given: rType)
         }
         
         guard values[lhs] == true else {
-            throw Compiler.Errors.notInitialized(id: lhs)
+            throw Compiler.Error.notInitialized(id: lhs)
         }
         
         guard values[rhs] == true else {
-            throw Compiler.Errors.notInitialized(id: rhs)
+            throw Compiler.Error.notInitialized(id: rhs)
         }
         
         var operatorStatement = ""
@@ -158,23 +158,23 @@ final class Generator {
     
     func doComplexAssignment(variable: String, lhs: String, rhs: Literal, operation: Operator) throws {
         guard let type = variables[variable] else {
-            throw Compiler.Errors.cannotFindInScope(id: variable)
+            throw Compiler.Error.cannotFindInScope(id: variable)
         }
         
         guard let lType = variables[lhs] else {
-            throw Compiler.Errors.cannotFindInScope(id: lhs)
+            throw Compiler.Error.cannotFindInScope(id: lhs)
         }
         
         guard type == lType else {
-            throw Compiler.Errors.typeMismatch(real: type, given: lType)
+            throw Compiler.Error.typeMismatch(real: type, given: lType)
         }
         
         guard type == rhs.typeName.rawValue else {
-            throw Compiler.Errors.typeMismatch(real: type, given: rhs.typeName.rawValue)
+            throw Compiler.Error.typeMismatch(real: type, given: rhs.typeName.rawValue)
         }
         
         guard values[lhs] == true else {
-            throw Compiler.Errors.notInitialized(id: lhs)
+            throw Compiler.Error.notInitialized(id: lhs)
         }
         
         var operatorStatement = ""
@@ -196,23 +196,23 @@ final class Generator {
     
     func doComplexAssignment(variable: String, lhs: Literal, rhs: String, operation: Operator) throws {
         guard let type = variables[variable] else {
-            throw Compiler.Errors.cannotFindInScope(id: variable)
+            throw Compiler.Error.cannotFindInScope(id: variable)
         }
         
         guard let rType = variables[rhs] else {
-            throw Compiler.Errors.cannotFindInScope(id: rhs)
+            throw Compiler.Error.cannotFindInScope(id: rhs)
         }
         
         guard type == lhs.typeName.rawValue else {
-            throw Compiler.Errors.typeMismatch(real: type, given: lhs.typeName.rawValue)
+            throw Compiler.Error.typeMismatch(real: type, given: lhs.typeName.rawValue)
         }
         
         guard type == rType else {
-            throw Compiler.Errors.typeMismatch(real: type, given: rType)
+            throw Compiler.Error.typeMismatch(real: type, given: rType)
         }
         
         guard values[rhs] == true else {
-            throw Compiler.Errors.notInitialized(id: rhs)
+            throw Compiler.Error.notInitialized(id: rhs)
         }
         
         var operatorStatement = ""
@@ -234,19 +234,19 @@ final class Generator {
     
     func doComplexAssignment(variable: String, lhs: Literal, rhs: Literal, operation: Operator) throws {
         guard let type = variables[variable] else {
-            throw Compiler.Errors.cannotFindInScope(id: variable)
+            throw Compiler.Error.cannotFindInScope(id: variable)
         }
         
         guard type == lhs.typeName.rawValue else {
-            throw Compiler.Errors.typeMismatch(real: type, given: lhs.typeName.rawValue)
+            throw Compiler.Error.typeMismatch(real: type, given: lhs.typeName.rawValue)
         }
         
         guard type == rhs.typeName.rawValue else {
-            throw Compiler.Errors.typeMismatch(real: type, given: rhs.typeName.rawValue)
+            throw Compiler.Error.typeMismatch(real: type, given: rhs.typeName.rawValue)
         }
         
         guard case let .int(lhsInt) = lhs, case let .int(rhsInt) = rhs else {
-            throw Compiler.Errors.notSupportedType(id: "string")
+            throw Compiler.Error.notSupportedType(id: "string")
         }
         
         var optimized = 0

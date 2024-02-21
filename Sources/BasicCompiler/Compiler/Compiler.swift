@@ -22,7 +22,7 @@ final class Compiler {
         case let .success(used: _, unused: unused) where unused.isEmpty:
             break
         case let .success(used: _, unused: unused):
-            throw Compiler.Errors.programEnd(token: unused[0])
+            throw Compiler.Error.programEnd(token: unused[0])
         case let .failure(error: error):
             throw error
         }
