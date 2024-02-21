@@ -34,6 +34,17 @@
         }
       }
     },
+    "Compiler.Error.other[%@]" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unexpected error '%1$@'."
+          }
+        }
+      }
+    },
     "Compiler.Error.programEnd[%lld|%lld|%@]" : {
       "extractionState" : "manual",
       "localizations" : {

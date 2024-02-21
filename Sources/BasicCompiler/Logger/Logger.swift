@@ -10,7 +10,7 @@ import Foundation
 final class Logger {
     static let shared = Logger()
     
-    func log(_ message: LocalizedError) {
+    func error(_ message: LocalizedError) {
         print(message.localizedDescription)
     }
 }
